@@ -1,0 +1,11 @@
+{
+	config: {
+		path: /usr/bin,
+		iterations: 10,
+	},
+	inputs: [
+		batch001,
+		batch002,
+		(optional) batch003,
+	],
+},
