@@ -1,7 +1,7 @@
 #include <Python.h>
 
-#include "../c/luxem_rawread.h"
-#include "../c/luxem_rawwrite.h"
+#include "c/luxem_rawread.h"
+#include "c/luxem_rawwrite.h"
 
 #include <assert.h>
 
