@@ -8,6 +8,7 @@ setup(
     author_email = 'rendaw@zarbosoft.com', 
     url = 'http://www.zarbosoft.com/luxem', 
     long_description = 'Luxem is a typed data serialization format similar to JSON.',
+    packages = ['luxem'],
     ext_modules = [
         Extension(
             '_luxem', 
