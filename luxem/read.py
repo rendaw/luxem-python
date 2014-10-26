@@ -8,8 +8,7 @@ def _read_struct_element_object(element, callback, type_name=None):
     if type_name is None:
         out = value
     else:
-        out = struct.Typed(type_name)
-        out.value = value
+        out = struct.Typed(type_name, value)
     def object_callback(key, subelement):
         def subcallback(substruct):
             value[key] = substruct
@@ -22,8 +21,7 @@ def _read_struct_element_array(element, callback, type_name=None):
     if type_name is None:
         out = value
     else:
-        out = struct.Typed(type_name)
-        out.value = value
+        out = struct.Typed(type_name, value)
     element.element(
         lambda subelement: _read_struct(
             subelement, 
@@ -34,9 +32,9 @@ def _read_struct_element_array(element, callback, type_name=None):
 
 def _read_struct(element, callback):
     if isinstance(element, struct.Typed):
-        if isinstance(element, Reader.Object):
+        if isinstance(element.value, Reader.Object):
             _read_struct_element_object(element.value, callback, element.name)
-        elif isinstance(element, Reader.Array):
+        elif isinstance(element.value, Reader.Array):
             _read_struct_element_array(element.value, callback, element.name)
         else:
             callback(process_any(element))
@@ -131,13 +129,13 @@ class Reader(_luxem.Reader):
                 self._finish_callback()
 
         def element(self, callback, processor=None):
-            if self._callback:
+            if self._callback: # pragma: no cover
                 raise ValueError('Callback already set!')
             self._processor = processor
             self._callback = callback
 
         def struct(self, callback):
-            if self._callback:
+            if self._callback: # pragma: no cover
                 raise ValueError('Callback already set!')
             self._callback = lambda element: _read_struct(element, callback)
 
@@ -203,7 +201,7 @@ def process_typed_bool(element):
 
 def process_bool(element):
     if isinstance(element, struct.Typed):
-        if element.name not in ['bool']:
+        if element.name not in ['bool']: # pragma: no cover
             raise ValueError('Expected bool but got typed {}'.format(element.name))
         return process_typed_bool(element.value)
     else:
@@ -214,7 +212,7 @@ def process_typed_int(element):
 
 def process_int(element):
     if isinstance(element, struct.Typed):
-        if element.name not in ['int']:
+        if element.name not in ['int']: # pragma: no cover
             raise ValueError('Expected int but got typed {}'.format(element.name))
         return process_typed_int(element.value)
     else:
@@ -225,22 +223,22 @@ def process_typed_float(element):
 
 def process_float(element):
     if isinstance(element, struct.Typed):
-        if element.name not in ['float']:
+        if element.name not in ['float']: # pragma: no cover
             raise ValueError('Expected float but got typed {}'.format(element.name))
         return process_typed_float(element.value)
     else:
         return process_typed_float(element)
 
 def process_typed_string(element):
-    return element.value
+    return element
 
 def process_string(element):
     if isinstance(element, struct.Typed):
-        if element.name not in ['string']:
+        if element.name not in ['string']: # pragma: no cover
             raise ValueError('Expected string but got typed {}'.format(element.name))
-        process_typed_string(element.value)
+        return process_typed_string(element.value)
     else:
-        process_typed_string(element)
+        return process_typed_string(element)
 
 def process_typed_base64(element):
     return base64.b64decode(element)
@@ -266,26 +264,26 @@ def process_bytes(element):
             return process_typed_ascii16(element.value)
         elif element.name == 'base64':
             return process_typed_base64(element.value)
-        else:
+        else: # pragma: no cover
             raise ValueError('Expected bytes but got typed {}'.format(element.name))
-    else:
+    else: # pragma: no cover
         raise ValueError('Expected types but no value type specified.')
 
 def process_object(element):
     if isinstance(element, struct.Typed):
-        if not isinstace(element.value, Reader.Object):
+        if not isinstace(element.value, Reader.Object): # pragma: no cover
             raise ValueError('Expected object but got {}'.format(type(element.value)))
     else:
-        if not isinstance(element, Reader.Object):
+        if not isinstance(element, Reader.Object): # pragma: no cover
             raise ValueError('Expected object but got {}'.format(type(element)))
     return element
 
 def process_array(element):
     if isinstance(element, struct.Typed):
-        if not isinstace(element.value, Reader.Array):
+        if not isinstace(element.value, Reader.Array): # pragma: no cover
             raise ValueError('Expected array but got {}'.format(type(element.value)))
     else:
-        if not isinstance(element, Reader.Array):
+        if not isinstance(element, Reader.Array): # pragma: no cover
             raise ValueError('Expected array but got {}'.format(type(element)))
     return element
 

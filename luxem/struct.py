@@ -3,7 +3,3 @@ class Typed(object):
         self.name = name
         self.value = value
 
-class Untyped(object):
-    def __init_(self, raw):
-        self.raw = raw
-

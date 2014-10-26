@@ -88,6 +88,9 @@ class TestRead(unittest.TestCase):
     def test_obj_key(self):
         luxem.Reader().element(lambda obj: obj.int('key', self.compare(7))).feed('{key: (int) 7}')
 
+    def test_obj_no_callback(self):
+        luxem.Reader().feed('{key: (int) 7}')
+
     @uses_compare
     def test_array_elem(self):
         luxem.Reader().element(lambda array: array.element(self.compare(7), luxem.int)).feed('[7]')
@@ -126,6 +129,90 @@ class TestRead(unittest.TestCase):
         luxem.Reader().struct(self.compare({})).feed('{}')
 
     @uses_compare
+    def test_struct_typed_object(self):
+        luxem.Reader().struct(self.compare(luxem.Typed('twig', {}))).feed('(twig) {}')
+
+    @uses_compare
     def test_struct_object_key_typed(self):
         luxem.Reader().struct(self.compare({'key': 7})).feed('{key: (int) 7}')
+    
+    @uses_compare
+    def test_struct_typed_array(self):
+        luxem.Reader().struct(self.compare(luxem.Typed('pastry', []))).feed('(pastry) []')
+
+
+    # Shallow, interface dependent testing
+    @uses_compare
+    def test_obj_key_process_bool(self):
+        luxem.Reader().element(lambda obj: obj.bool('key', self.compare(True))).feed('{key: true }')
+    
+    @uses_compare
+    def test_obj_key_process_typed_bool(self):
+        luxem.Reader().element(lambda obj: obj.bool('key', self.compare(True))).feed('{key: (bool) true }')
+    
+    @uses_compare
+    def test_obj_key_process_int(self):
+        luxem.Reader().element(lambda obj: obj.int('key', self.compare(2))).feed('{key: 2 }')
+    
+    @uses_compare
+    def test_obj_key_process_typed_int(self):
+        luxem.Reader().element(lambda obj: obj.int('key', self.compare(2))).feed('{key: (int) 2 }')
+    
+    @uses_compare
+    def test_obj_key_process_float(self):
+        luxem.Reader().element(lambda obj: obj.float('key', self.compare(3.7))).feed('{key: 3.7 }')
+    
+    @uses_compare
+    def test_obj_key_process_typed_float(self):
+        luxem.Reader().element(lambda obj: obj.float('key', self.compare(3.7))).feed('{key: (float) 3.7 }')
+    
+    @uses_compare
+    def test_obj_key_process_string(self):
+        luxem.Reader().element(lambda obj: obj.string('key', self.compare('om'))).feed('{key: om }')
+    
+    @uses_compare
+    def test_obj_key_process_string(self):
+        luxem.Reader().element(lambda obj: obj.string('key', self.compare('om'))).feed('{key: (string) om }')
+    
+    @uses_compare
+    def test_obj_key_process_bytes_base64(self):
+        luxem.Reader().element(lambda obj: obj.bytes('key', self.compare(bytes('sure.')))).feed('{key: (base64) c3VyZS4= }')
+    
+    @uses_compare
+    def test_obj_key_process_base64(self):
+        luxem.Reader().element(lambda obj: obj.base64('key', self.compare(bytes('sure.')))).feed('{key: c3VyZS4= }')
+    
+    @uses_compare
+    def test_obj_key_process_typed_base64(self):
+        luxem.Reader().element(lambda obj: obj.base64('key', self.compare(bytes('sure.')))).feed('{key: (base64) c3VyZS4= }')
+    
+    @uses_compare
+    def test_obj_key_process_bytes_ascii16(self):
+        luxem.Reader().element(lambda obj: obj.bytes('key', self.compare(bytearray([1, 239])))).feed('{key: (ascii16) abop }')
+    
+    @uses_compare
+    def test_obj_key_process_ascii16(self):
+        luxem.Reader().element(lambda obj: obj.ascii16('key', self.compare(bytearray([1, 239])))).feed('{key: abop }')
+    
+    @uses_compare
+    def test_obj_key_process_typed_ascii16(self):
+        luxem.Reader().element(lambda obj: obj.ascii16('key', self.compare(bytearray([1, 239])))).feed('{key: (ascii16) abop }')
+    
+    def test_obj_key_process_object(self):
+        luxem.Reader().element(lambda obj: obj.object('key', lambda element: self.assertEqual(type(element), luxem.Reader.Object))).feed('{key: {} }')
+
+    def test_obj_key_process_array(self):
+        luxem.Reader().element(lambda obj: obj.array('key', lambda element: self.assertEqual(type(element), luxem.Reader.Array))).feed('{key: [] }')
+    
+    @uses_compare
+    def test_obj_key_process_element(self):
+        luxem.Reader().element(lambda obj: obj.element('key', self.compare('om'))).feed('{key: om }')
+    
+    @uses_compare
+    def test_obj_key_process_element_with_processor(self):
+        luxem.Reader().element(lambda obj: obj.element('key', self.compare('om'), luxem.str)).feed('{key: om }')
+
+    @uses_compare
+    def test_obj_key_struct(self):
+        luxem.Reader().element(lambda obj: obj.struct('key', self.compare('om'))).feed('{key: om}')
 

@@ -137,7 +137,7 @@ class TestRawRead(unittest.TestCase):
 class TestRawReadFile(TestRawRead):
     def setUp(self):
         super(TestRawReadFile, self).setUp()
-        self.data = open('test_temp_file', 'r+')
+        self.data = open('test_temp_file', 'w+')
         self.data.truncate()
 
     def tearDown(self):

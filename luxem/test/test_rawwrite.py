@@ -139,7 +139,7 @@ class TestRawWriteBuffer(unittest.TestCase):
 
 class TestRawWriteFile(unittest.TestCase):
     def setUp(self):
-        self.file = open('test_temp_file', 'r+')
+        self.file = open('test_temp_file', 'w+')
         self.file.truncate()
         self.writer = luxem.RawWriter(
             write_file=self.file,

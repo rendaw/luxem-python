@@ -83,3 +83,7 @@ class TestWrite(unittest.TestCase):
         self.writer.value([{}])
         self.compare('[{},],')
 
+    def test_unknown_type(self):
+        self.writer.value(luxem.Typed('element', 'palloodium'))
+        self.compare('(element)palloodium,')
+
