@@ -73,9 +73,21 @@ class TestRawRead(unittest.TestCase):
     def test_empty(self):
         self.reader.feed('')
         self.compare([])
+
+    def test_comment(self):
+        self.reader.feed('*nothing to see here*')
+        self.compare([])
+    
+    def test_escaped_comment(self):
+        self.reader.feed('*escape \\* escape*')
+        self.compare([])
     
     def test_untyped(self):
         self.reader.feed('7')
+        self.compare([('primitive', '7')])
+    
+    def test_untyped_comment(self):
+        self.reader.feed('* before * 7 * after *')
         self.compare([('primitive', '7')])
     
     def test_untyped_comma(self):
