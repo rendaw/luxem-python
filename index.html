@@ -42,7 +42,7 @@ span.pre { font-family: monospace; font-size: 1.2em; color: #2080A0; }
 </ul>
 
 <div>
-	<a name="examples">
+	<a name="examples"></a>
 	<h1>Examples</h1>
 	<div class="class">
 		<h1>Minimal write</h1>
@@ -117,16 +117,15 @@ with open('export.luxem', 'r') as import_file:
 		<p>Output:</p>
 		<pre>processing batch batch001
 processing batch batch002
-processing batch batch003
-</p>
+processing batch batch003</pre>
 	</div>
 </div>
 
 <div>
-	<a name="api">
+	<a name="api"></a>
 	<h1>API</h1>
 	<div class="class">
-		<a name="luxem_Typed">
+		<a name="luxem_Typed"></a>
 		<h1>luxem.Typed</h1>
 		<p>This represents an explicitly typed value.</p>
 		<p>Any string can be used as a type, but the following are built in to the library:</p>
@@ -144,7 +143,7 @@ processing batch batch003
 		</div>
 	</div>
 	<div class="class">
-		<a name="processors">
+		<a name="processors"></a>
 		<h1>Processors</h1>
 		<p>Processors are functions that normalize reader input before it is passed to a callback.</p>
 		<p>Each processor returns the type indicated by its name.  If a read value is unconvertable or is typed but with a mismatched type name the processor will raise an exception.</p>
@@ -161,7 +160,7 @@ processing batch batch003
 		</div>
 	</div>
 	<div class="class">
-		<a name="luxem_RawReader">
+		<a name="luxem_RawReader"></a>
 		<h1>luxem.RawReader</h1>
 		<div class="method">
 			<h1>RawReader(object_begin, object_end, array_begin, array_end, key, type, primitive)</h1>
@@ -188,7 +187,7 @@ processing batch batch003
 		</div>
 	</div>
 	<div class="class">
-		<a name="luxem_Reader">
+		<a name="luxem_Reader"></a>
 		<h1>luxem.Reader</h1>
 		<p><span class="pre">luxem.Reader</span> inerhits <span class="pre">feed</span> from <a href="#luxem_RawReader">luxem.RawReader</a>.  Because a luxem document is an array at the highest level, <span class="pre">luxem.Reader.Array</span> methods are also provided in <span class="pre">luxem.Reader</span>.</p>
 		<div class="method">
@@ -205,7 +204,7 @@ processing batch batch003
 		</div>
 	</div>
 	<div class="class">
-		<a name="luxem_Reader_Array">
+		<a name="luxem_Reader_Array"></a>
 		<h1>luxem.Reader.Array</h1>
 		<p>Manages the parse context of a luxem array.  A callback can be associated with 
 		<div class="method">
@@ -215,14 +214,14 @@ processing batch batch003
 			<pre>def callback():
 	return</pre>
 		</div>
-		<a name="luxem_Reader_Array_element">
+		<a name="luxem_Reader_Array_element"></a>
 		<div class="method">
 			<h1>element(callback, processor=None)</h1>
 			<p>Uses <span class="pre">callback</span> for all elements in the array.  Uses user-provided <span class="pre">processor</span> to preprocess input.
 			<pre>def callback(value):
 	return</pre>
 		</div>
-		<a name="luxem_Reader_Array_struct">
+		<a name="luxem_Reader_Array_struct"></a>
 		<div class="method">
 			<h1>struct(callback)</h1>
 			<p>Uses <span class="pre">callback</span> for all elements in the array.  Recursively reads the subtree at at each element and builds a Python structure of <span class="pre">list</span>s and <span class="pre">dict</span>s, which is passed in whole to <span class="pre">callback</span>.  Typed values are automatically translated if they match a built-in processor.</p>
@@ -231,7 +230,7 @@ processing batch batch003
 		</div>
 	</div>
 	<div class="class">
-		<a name="luxem_Reader_Object">
+		<a name="luxem_Reader_Object"></a>
 		<h1>luxem.Reader.Object</h1>
 		<p>Manages the parse context of a luxem object.  Separate callbacks can be associated with expected keys or a passthrough callback can be used to capture all key-value pairs.</p>
 		<div class="method">
