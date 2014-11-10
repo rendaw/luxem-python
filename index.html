@@ -30,13 +30,14 @@ span.pre { font-family: monospace; font-size: 1.2em; color: #2080A0; }
 		<a href="#api">API</a>
 		<ul>
 			<li><a href="#luxem_Typed">luxem.Typed</a></li>
-			<li><a href="#processors">Processors</a></li>
 			<li><a href="#luxem_RawReader">luxem.RawReader</a></li>
 			<li><a href="#luxem_Reader">luxem.Reader</a></li>
 			<li><a href="#luxem_Reader_Array">luxem.Reader.Array</a></li>
 			<li><a href="#luxem_Reader_Object">luxem.Reader.Object</a></li>
 			<li><a href="#luxem_RawWriter">luxem.RawWriter</a></li>
 			<li><a href="#luxem_Writer">luxem.Writer</a></li>
+			<li><a href="#convenience">Convenience methods</a></li>
+			<li><a href="#processors">Processors</a></li>
 		</ul>
 	</li>
 </ul>
@@ -140,23 +141,6 @@ processing batch batch003</pre>
 		<div class="method">
 			<h1>luxem.Typed(name, value=None)</h1>
 			<p>Initializes the <span class="pre">name</span> and <span class="pre">value</span> attributes.</p>
-		</div>
-	</div>
-	<div class="class">
-		<a name="processors"></a>
-		<h1>Processors</h1>
-		<p>Processors are functions that normalize reader input before it is passed to a callback.</p>
-		<p>Each processor returns the type indicated by its name.  If a read value is unconvertable or is typed but with a mismatched type name the processor will raise an exception.</p>
-		<div class="method">
-			<h1>bool(value)</h1>
-			<h1>int(value)</h1>
-			<h1>float(value)</h1>
-			<h1>ascii16(value)</h1>
-			<h1>base64(value)</h1>
-			<h1>bytes(value)</h1>
-			<h1>array(value)</h1>
-			<h1>object(value)</h1>
-			<h1>any(value)</h1>
 		</div>
 	</div>
 	<div class="class">
@@ -374,6 +358,35 @@ processing batch batch003</pre>
 		<div class="method">
 			<h1>value(data)</h1>
 			<p>Writes any object, recursively serializing iterables and maps as arrays and objects.  If <span class="pre">data</span> is a <span class="pre">luxem.Typed</span>, the value in <span class="pre">value.name</span> is written as a type.  Returns self.</p>
+		</div>
+	</div>
+	<div class="class">
+		<a name="convenience"></a>
+		<h1>Convenience methods</h1>
+		<div class="method">
+			<h1>luxem.read_struct(data)</h1>
+			<p>Reads a document, <span class="pre">data</span>, and returns a list of all root structs.  <span class="pre">data</span> can be a string or file.</p>
+		</div>
+		<div class="method">
+			<h1>luxem.build_struct(context, callback)</h1>
+			<p>Whereas <span class="pre">luxem.Reader.Array.struct</span> and <span class="pre">luxem.Reader.Object.struct</span> build Python structures from subtrees when they are encountered in the future, <span class="pre">luxem.build_struct</span> builds a Python structure from the <span class="pre">context</span> subtree that has already been encountered.  Not necessarily convenient.</p>
+		</div>
+	</div>
+	<div class="class">
+		<a name="processors"></a>
+		<h1>Processors</h1>
+		<p>Processors are functions that normalize reader input before it is passed to a callback.</p>
+		<p>Each processor returns the type indicated by its name.  If a read value is unconvertable or is typed but with a mismatched type name the processor will raise an exception.</p>
+		<div class="method">
+			<h1>bool(value)</h1>
+			<h1>int(value)</h1>
+			<h1>float(value)</h1>
+			<h1>ascii16(value)</h1>
+			<h1>base64(value)</h1>
+			<h1>bytes(value)</h1>
+			<h1>array(value)</h1>
+			<h1>object(value)</h1>
+			<h1>any(value)</h1>
 		</div>
 	</div>
 </div>

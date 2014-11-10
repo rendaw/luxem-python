@@ -3,7 +3,7 @@ import base64
 import _luxem
 import struct
 
-def _read_struct_element_object(element, callback, type_name=None):
+def _build_struct_element_object(element, callback, type_name=None):
     value = {}
     if type_name is None:
         out = value
@@ -12,37 +12,37 @@ def _read_struct_element_object(element, callback, type_name=None):
     def object_callback(key, subelement):
         def subcallback(substruct):
             value[key] = substruct
-        _read_struct(subelement, subcallback)
+        build_struct(subelement, subcallback)
     element.passthrough(object_callback)
     element.finished(lambda: callback(out))
 
-def _read_struct_element_array(element, callback, type_name=None):
+def _build_struct_element_array(element, callback, type_name=None):
     value = []
     if type_name is None:
         out = value
     else:
         out = struct.Typed(type_name, value)
     element.element(
-        lambda subelement: _read_struct(
+        lambda subelement: build_struct(
             subelement, 
             lambda substruct: value.append(substruct)
         )
     )
     element.finished(lambda: callback(out))
 
-def _read_struct(element, callback):
+def build_struct(element, callback):
     if isinstance(element, struct.Typed):
         if isinstance(element.value, Reader.Object):
-            _read_struct_element_object(element.value, callback, element.name)
+            _build_struct_element_object(element.value, callback, element.name)
         elif isinstance(element.value, Reader.Array):
-            _read_struct_element_array(element.value, callback, element.name)
+            _build_struct_element_array(element.value, callback, element.name)
         else:
             callback(process_any(element))
     else:
         if isinstance(element, Reader.Object):
-            _read_struct_element_object(element, callback)
+            _build_struct_element_object(element, callback)
         elif isinstance(element, Reader.Array):
-            _read_struct_element_array(element, callback)
+            _build_struct_element_array(element, callback)
         else:
             callback(process_any(element))
 
@@ -102,7 +102,7 @@ class Reader(_luxem.Reader):
             self._callbacks[key] = element_callback
 
         def struct(self, key, callback):
-            self._callbacks[key] = lambda element: _read_struct(element, callback)
+            self._callbacks[key] = lambda element: build_struct(element, callback)
 
         def passthrough(self, callback):
             self._passthrough_callback = callback
@@ -137,7 +137,7 @@ class Reader(_luxem.Reader):
         def struct(self, callback):
             if self._callback: # pragma: no cover
                 raise ValueError('Callback already set!')
-            self._callback = lambda element: _read_struct(element, callback)
+            self._callback = lambda element: build_struct(element, callback)
 
         def finished(self, callback):
             self._finish_callback = callback
@@ -195,6 +195,15 @@ class Reader(_luxem.Reader):
     def _pop(self):
         self._stack[-1]._finish()
         self._stack.pop()
+
+def read_struct(data):
+    out = []
+    def callback(struct):
+        out.append(struct)
+    reader = Reader()
+    reader.struct(callback)
+    reader.feed(data, True)
+    return out
 
 def process_typed_bool(element):
     return False if element.lower() in ['0', 'false', 'no'] else True

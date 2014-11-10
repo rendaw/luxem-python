@@ -6,7 +6,9 @@ from _luxem import (
 )
 from struct import Typed
 from read import (
+    build_struct,
     Reader,
+    read_struct,
     process_bool as bool,
     process_int as int,
     process_float as float,

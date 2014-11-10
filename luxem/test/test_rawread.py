@@ -87,7 +87,7 @@ class TestRawRead(unittest.TestCase):
         self.compare([('primitive', '7')])
     
     def test_untyped_comment(self):
-        self.reader.feed('* before * 7 * after *')
+        self.reader.feed('* before * *again* 7 * after * *lagoon*')
         self.compare([('primitive', '7')])
     
     def test_untyped_comma(self):
@@ -145,7 +145,23 @@ class TestRawRead(unittest.TestCase):
         read_length = self.reader.feed('  a')
         self.assertEqual(read_length, 3)
         self.compare([('primitive', 'a')])
+    
+    def test_type_only(self):
+        self.reader.feed('(x),')
+        self.compare([('type', 'x'), ('primitive', '')])
+    
+    def test_type_only_eof(self):
+        self.reader.feed('(x)', True)
+        self.compare([('type', 'x'), ('primitive', '')])
 
+    def test_type_only_array(self):
+        self.reader.feed('[(x)]')
+        self.compare([('array begin', None), ('type', 'x'), ('primitive', ''), ('array end', None)])
+    
+    def test_type_only_object(self):
+        self.reader.feed('{key: (x)}')
+        self.compare([('object begin', None), ('key', 'key'), ('type', 'x'), ('primitive', ''), ('object end', None)])
+    
 class TestRawReadFile(TestRawRead):
     def setUp(self):
         super(TestRawReadFile, self).setUp()

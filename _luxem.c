@@ -52,7 +52,9 @@ TRANSLATE_VOID_CALLBACK(array_end)
 #define TRANSLATE_STRING_CALLBACK(name) \
 static luxem_bool_t translate_rawread_##name(struct luxem_rawread_context_t *context, Reader *user_data, struct luxem_string_t const *string) \
 { \
-	PyObject *arguments = Py_BuildValue("(s#)", string->pointer, string->length); \
+	PyObject *prearguments = PyString_FromStringAndSize(string->pointer == 0 ? 1 : string->pointer, string->length); \
+	PyObject *arguments = Py_BuildValue("(O)", prearguments); \
+	Py_DECREF(prearguments); \
 	if (!arguments) return luxem_false; \
 	{ \
 		PyObject *result = PyEval_CallObject(user_data->name, arguments); \
@@ -300,8 +302,7 @@ static luxem_bool_t ReaderType_init(void)
 typedef struct {
 	PyObject_HEAD
 	struct luxem_rawwrite_context_t *context;
-	PyObject *write;
-	PyObject *file;
+	PyObject *target;
 } Writer;
 
 static luxem_bool_t translate_rawwrite_write(struct luxem_rawwrite_context_t *context, Writer *user_data, struct luxem_string_t const *string)
@@ -309,7 +310,7 @@ static luxem_bool_t translate_rawwrite_write(struct luxem_rawwrite_context_t *co
 	PyObject *arguments = Py_BuildValue("(s#)", string->pointer, string->length);
 	if (!arguments) return luxem_false;
 	{
-		PyObject *result = PyEval_CallObject(user_data->write, arguments);
+		PyObject *result = PyEval_CallObject(user_data->target, arguments);
 		Py_DECREF(arguments);
 		if (!result)
 		{
@@ -335,8 +336,7 @@ static PyObject *Writer_new(PyTypeObject *type, PyObject *positional_args, PyObj
 			return NULL;
 		}
 
-		self->write = NULL;
-		self->file = NULL;
+		self->target = NULL;
 	}
 
 	return (PyObject *)self;
@@ -349,8 +349,7 @@ static int Writer_init(Writer *self, PyObject *positional_args, PyObject *named_
 
 	static char *named_args_list[] = 
 	{
-		"write_callback", 
-		"write_file",
+		"write_target", 
 		"pretty", 
 		"use_spaces", 
 		"indent_multiple",
@@ -360,29 +359,23 @@ static int Writer_init(Writer *self, PyObject *positional_args, PyObject *named_
 	if (!PyArg_ParseTupleAndKeywords(
 		positional_args, 
 		named_args, 
-		"|OObbi", 
+		"|Obbi", 
 		named_args_list, 
-		&self->write, 
-		&self->file,
+		&self->target, 
 		&pretty,
 		&use_spaces,
 		&indent_multiple))
 		return -1; 
 
-	if (self->write)
+	if (self->target)
 	{
-		Py_INCREF(self->write);
-		luxem_rawwrite_set_write_callback(self->context, (luxem_rawwrite_write_callback_t)translate_rawwrite_write, self);
+		Py_INCREF(self->target);
+		if (PyFile_Check(self->target))
+			luxem_rawwrite_set_file_out(self->context, PyFile_AsFile(self->target));
+		else
+			luxem_rawwrite_set_write_callback(self->context, (luxem_rawwrite_write_callback_t)translate_rawwrite_write, self);
 	}
-
-	if (self->file)
-	{
-		Py_INCREF(self->file);
-		luxem_rawwrite_set_file_out(self->context, PyFile_AsFile(self->file));
-	}
-
-	if (!self->write && !self->file)
-		luxem_rawwrite_set_buffer_out(self->context);
+	else luxem_rawwrite_set_buffer_out(self->context);
 
 	if (pretty)
 		luxem_rawwrite_set_pretty(self->context, use_spaces ? ' ' : '\t', indent_multiple);
@@ -393,8 +386,7 @@ static int Writer_init(Writer *self, PyObject *positional_args, PyObject *named_
 static void Writer_dealloc(Writer *self)
 {
 	luxem_rawwrite_destroy(self->context);
-	Py_XDECREF(self->write);
-	Py_XDECREF(self->file);
+	Py_XDECREF(self->target);
 	self->ob_type->tp_free((PyObject*)self);
 }
 
@@ -475,7 +467,7 @@ static PyObject *Writer_primitive(Writer *self, PyObject *positional_args)
 
 static PyObject *Writer_dump(Writer *self)
 {
-	if (self->write || self->file)
+	if (self->target)
 	{
 		PyErr_SetString(PyExc_TypeError, "luxem.RawWriter.dump can only be used if not using a custom serialize callback for serializing to file.");
 		return NULL;
