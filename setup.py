@@ -8,7 +8,7 @@ setup(
     packages = ['luxem'],
     url = 'https://github.com/Rendaw/luxem-python',
     download_url = 'https://github.com/Rendaw/luxem-python/tarball/v0.0.1',
-    description = 'Luxem is a typed data serialization format similar to JSON.',
+    description = 'luxem is a typed data serialization format similar to JSON.',
     long_description=open('readme.md', 'r').read(),
     classifiers=[                                                               
         'Development Status :: 3 - Alpha',

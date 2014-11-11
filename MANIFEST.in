@@ -1,2 +1,6 @@
 include license.txt
 include readme.md
+include c/luxem_common.h
+include c/luxem_internal_common.h
+include c/luxem_rawread.h
+include c/luxem_rawwrite.h
