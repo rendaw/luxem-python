@@ -3,12 +3,19 @@ from distutils.core import setup, Extension
 setup(
     name = 'luxem', 
     version = '0.1', 
-    description = 'Luxem is a typed data serialization format similar to JSON.', 
     author = 'Rendaw', 
     author_email = 'rendaw@zarbosoft.com', 
-    url = 'http://www.zarbosoft.com/luxem', 
-    long_description = 'Luxem is a typed data serialization format similar to JSON.',
     packages = ['luxem'],
+    url = 'https://github.com/Rendaw/luxem-python', 
+    download_url = 'https://github.com/Rendaw/luxem-python/tarball/v0.0.1', 
+    description = 'Luxem is a typed data serialization format similar to JSON.', 
+    long_description=open('readme.md', 'r').read(),
+    classifiers=[                                                               
+        'Development Status :: 3 - Alpha',
+        'Environment :: Console',
+        'Topic :: Software Development :: Libraries',
+        'License :: OSI Approved :: BSD License',
+    ],
     ext_modules = [
         Extension(
             '_luxem', 
