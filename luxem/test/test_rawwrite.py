@@ -44,7 +44,7 @@ class TestRawWrite(unittest.TestCase):
     def setUp(self):
         self.sequence = []
         self.writer = luxem.RawWriter(
-            write_callback=lambda text: self.sequence.append(text),
+            target=lambda text: self.sequence.append(text),
             pretty=True,
             use_spaces=True,
             indent_multiple=4
@@ -142,7 +142,7 @@ class TestRawWriteFile(unittest.TestCase):
         self.file = open('test_temp_file', 'w+')
         self.file.truncate()
         self.writer = luxem.RawWriter(
-            write_file=self.file,
+            target=self.file,
             pretty=True,
             use_spaces=True,
             indent_multiple=4

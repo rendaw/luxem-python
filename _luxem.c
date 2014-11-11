@@ -349,7 +349,7 @@ static int Writer_init(Writer *self, PyObject *positional_args, PyObject *named_
 
 	static char *named_args_list[] = 
 	{
-		"write_target", 
+		"target", 
 		"pretty", 
 		"use_spaces", 
 		"indent_multiple",
