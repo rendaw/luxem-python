@@ -1,4 +1,4 @@
-luxem is a typed data serialization format similar to JSON.  The `luxem` Python library assists reading and writing luxem documents.
+The `luxem` Python library assists reading and writing luxem documents.
 
 See the documentation [here](http://rendaw.github.io/luxem-python/index.html).
 
