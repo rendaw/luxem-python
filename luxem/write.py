@@ -1,7 +1,6 @@
-import base64
-
 import _luxem
-import struct
+from luxem.struct import Typed
+
 
 class _ArrayElement(object):
     def __init__(self, item):
@@ -16,10 +15,8 @@ class _ArrayElement(object):
             writer.array_end()
             return False
 
-class _ObjectElement(object):
-    def __init__(self, item):
-        self.item_iter = item.iteritems()
 
+class _ObjectElement(object):
     def step(self, writer, stack):
         try:
             next_child = next(self.item_iter)
@@ -30,28 +27,32 @@ class _ObjectElement(object):
             writer.object_end()
             return False
 
+
+if hasattr(dict, 'iteritems'):
+    def init(self, item):
+        self.item_iter = item.iteritems()
+    _ObjectElement.__init__ = init
+else:
+    def init(self, item):
+        self.item_iter = iter(item.items())
+    _ObjectElement.__init__ = init
+
+
 class Writer(_luxem.Writer):
     def _process(self, stack, item):
-        if hasattr(item, 'iteritems'):
+        if isinstance(item, dict):
             self.object_begin()
             stack.append(_ObjectElement(item))
-        elif hasattr(item, '__iter__'):
+        elif isinstance(item, list):
             self.array_begin()
             stack.append(_ArrayElement(item))
-        elif isinstance(item, struct.Typed):
+        elif isinstance(item, Typed):
             self.type(item.name)
-            if item.name == 'ascii16':
-                self.primitive(_luxem.to_ascii16(item.value))
-            elif item.name == 'base64':
-                self.primitive(base64.b64encode(item.value))
-            elif item.name in ['int', 'float', 'string']:
-                self.primitive(unicode(item.value).encode('utf-8'))
-            else:
-                self._process(stack, item.value)
+            self._process(stack, item.value)
         else:
-            self.primitive(unicode(item).encode('utf-8'))
+            self.primitive(str(item))
 
-    def value(self, data):
+    def element(self, data):
         stack = []
         self._process(stack, data)
         while stack:
@@ -59,3 +60,13 @@ class Writer(_luxem.Writer):
                 pass
             stack.pop()
         return self
+
+
+def dump(dest, value, **kwargs):
+    Writer(target=dest, **kwargs).element(value)
+
+
+def dumps(value, **kwargs):
+    w = Writer(**kwargs)
+    w.element(value)
+    return w.dump()
