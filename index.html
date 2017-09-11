@@ -43,7 +43,7 @@ span.pre { font-family: monospace; font-size: 1.2em; color: #2080A0; }
 	<div class="class">
 		<pre>import luxem
 
-tree = luxem.loads(b'{a: 1, (int) b: 2}')[0]
+tree = luxem.loads(b'{a: 1, b: (int) 2}')[0]
 print(tree['b'].name)
 > 'int'
 print(tree['b'].value)
@@ -90,7 +90,7 @@ print(data)
 		<p>This represents an explicitly typed value.</p>
 		<div class="method">
 			<h1>luxem.Typed(name, value=None)</h1>
-			<p>Creates a typed value with type <span class="pre">name</span> and wrapped value <span class="pre">value</span>.</p>
+			<p>Creates a typed value with type attribute <span class="pre">name</span> and wrapped value attribute <span class="pre">value</span>.</p>
 		</div>
 	</div>
 	<div class="class">
