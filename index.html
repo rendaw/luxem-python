@@ -43,7 +43,7 @@ span.pre { font-family: monospace; font-size: 1.2em; color: #2080A0; }
 	<div class="class">
 		<pre>import luxem
 
-tree = luxem.loads(b'{a: 1, (int) b: 2')
+tree = luxem.loads(b'{a: 1, (int) b: 2}')[0]
 print(tree['b'].name)
 > 'int'
 print(tree['b'].value)
@@ -76,7 +76,7 @@ print(data)
 		<div class="method">
 			<h1>luxem.dump(file, value, **kwargs)</h1>
 			<h1>luxem.dumps(value, **kwargs)</h1>
-			<p>Serializes a single root element with <span class="pre">Writer</span>.  <span class="pre">kwargs</span> are passed to the constructor.  In <span class="pre">dumps</span> the serialized data is returned.</p>
+			<p>Serializes a single root element with <span class="pre">Writer</span>.  <span class="pre">kwargs</span> are passed to the constructor.  In <span class="pre">dumps</span> the serialized data is returned.  To serialize multiple root elements you may call this function multiple times or use the <span class="pre">Writer</span> class directly.</p>
 		</div>
 		<div class="method">
 			<h1>luxem.to_ascii16(value)</h1>
